@@ -1,0 +1,26 @@
+# ============================================================================
+# SECRETS & ENVIRONMENT VARIABLES (NEVER COMMIT TO PUBLIC REPO)
+# ============================================================================
+.env
+.env.*
+!.env.example
+
+# ============================================================================
+# RUNTIME USER HISTORY & PRIVATE JSON DATA
+# (The backend automatically creates and seeds backend/data/*.json on startup)
+# ============================================================================
+backend/data/*.json
+
+# ============================================================================
+# NODE / OS / IDE ARTIFACTS
+# ============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+*.sock
+*.log
+.vscode/
+.idea/

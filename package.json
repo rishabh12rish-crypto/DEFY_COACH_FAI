@@ -1,0 +1,11 @@
+{
+  "name": "defy-ai-coach",
+  "version": "2.0.0",
+  "description": "DEFY AI Athletic Performance & Fitness Coach — Full-Stack Architecture with Persistent Cross-Conversation Memory",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "test": "node tests/run_tests.js"
+  }
+}

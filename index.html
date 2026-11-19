@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEFY | Athletic Performance & Nutrition Hub</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="frontend/styles.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================== -->
+  <header class="navbar">
+    <div class="nav-brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      <div class="brand-mark">D</div>
+      <div class="brand-text">
+        <span class="brand-name">DEFY</span>
+        <span class="brand-tagline">Athletic Performance Hub</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="sync-badge" id="memorySyncBadge" title="All profile edits and chat history are saved in JSON and fed to your coach">
+        <span class="sync-dot"></span>
+        <span id="memorySyncText">JSON Memory Synced</span>
+      </div>
+
+      <button class="btn btn-secondary" id="openEditProfileBtn" title="Edit weight, calorie intake, macros, and training goals">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        <span>Edit Stats & Intakes</span>
+      </button>
+
+      <button class="btn btn-secondary" id="exportPlanBtn" title="Download your active coaching plan & profile as a text file">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span>Export Plan</span>
+      </button>
+
+      <button class="btn btn-primary" id="navOpenCoachBtn">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Ask Defy Coach</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN ATHLETE DASHBOARD (EDITABLE USER STATS, BIO-METRICS & TRAINING LOG)
+       ========================================================================== -->
+  <main class="dashboard-wrapper">
+
+    <!-- 1. HERO ATHLETE BANNER -->
+    <section class="hero-banner">
+      <div class="hero-left">
+        <div class="athlete-avatar">
+          <span id="dispInitials">AK</span>
+          <span class="online-dot"></span>
+        </div>
+        <div class="athlete-intro">
+          <div class="athlete-badges">
+            <span class="pill-badge orange" id="dispAthleteId">ATHLETE #DEFY-804</span>
+            <span class="pill-badge teal" id="dispLevel">INTERMEDIATE (YR 3)</span>
+            <span class="pill-badge neutral" id="dispBmiBadge">BMI 23.5 • OPTIMAL</span>
+          </div>
+          <h1 id="dispName">Arjun K.</h1>
+          <p>Primary Focus: <strong id="dispGoal">Lean Hypertrophy & Stamina</strong> • <span id="dispDietProtocol">Indian High-Protein Vegetarian</span></p>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="readiness-ring-card">
+          <div class="readiness-score">
+            <span class="score-num" id="dispReadiness">92%</span>
+            <span class="score-label">Readiness</span>
+          </div>
+          <div class="readiness-meta">
+            <strong>Live Sync Active</strong>
+            <span>Edits feed directly to Defy Coach</span>
+          </div>
+          <button class="btn btn-secondary btn-xs" id="heroEditBtn" title="Edit athlete stats">Edit</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. CORE ATHLETE STATS KPI STRIP (CLICK ANY CARD TO EDIT) -->
+    <section class="kpi-grid">
+      <div class="kpi-card editable-kpi" data-edit-focus="editWeightInput" title="Click to edit bodyweight, height & body fat">
+        <div class="kpi-top">
+          <span class="kpi-label">Bodyweight & Comp ✎</span>
+          <span class="kpi-icon orange-bg">⚖️</span>
+        </div>
+        <div class="kpi-value"><span id="dispWeight">74.5</span> <small>kg</small></div>
+        <div class="kpi-sub" id="dispBodyCompSub">~14.2% Body Fat • 178 cm</div>
+      </div>
+
+      <div class="kpi-card editable-kpi" data-edit-focus="editCaloriesInput" title="Click to edit daily calorie & water intake">
+        <div class="kpi-top">
+          <span class="kpi-label">Daily Calorie Intake ✎</span>
+          <span class="kpi-icon teal-bg">🔥</span>
+        </div>
+        <div class="kpi-value"><span id="dispCalories">2,450</span> <small>kcal</small></div>
+        <div class="kpi-sub" id="dispWaterSub">Hydration Target: 3.8 L / day</div>
+      </div>
+
+      <div class="kpi-card editable-kpi" data-edit-focus="editProteinInput" title="Click to edit daily protein, carbs & fat targets">
+        <div class="kpi-top">
+          <span class="kpi-label">Daily Protein Intake ✎</span>
+          <span class="kpi-icon sky-bg">⚡</span>
+        </div>
+        <div class="kpi-value"><span id="dispProtein">160</span> <small>g / day</small></div>
+        <div class="kpi-sub" id="dispProteinPerKgSub">2.15g per kg bodyweight</div>
+      </div>
+
+      <div class="kpi-card editable-kpi" data-edit-focus="editSplitInput" title="Click to edit active workout split & training goal">
+        <div class="kpi-top">
+          <span class="kpi-label">Active Activity Split ✎</span>
+          <span class="kpi-icon amber-bg">🏋️</span>
+        </div>
+        <div class="kpi-value kpi-value-text" id="dispActiveSplit">4-Day Push/Pull</div>
+        <div class="kpi-sub">Click any card to edit & sync with AI</div>
+      </div>
+    </section>
+
+    <!-- 3. TWO-COLUMN MAIN INFO GRID: NUTRITION BLUEPRINT & ATHLETE MEMORY / HISTORY -->
+    <section class="content-grid">
+
+      <!-- Left Column: Nutrition & Indian Staples Breakdown -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h2>Daily Macro & Intake Architecture</h2>
+            <p id="dispMacroSubtitle">Live targets fed into every food & activity plan</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="pill-badge teal" id="dispPanelCalBadge">2,450 KCAL</span>
+            <button class="btn btn-secondary btn-xs" id="panelEditMacrosBtn">✎ Edit Intakes</button>
+          </div>
+        </div>
+
+        <div class="macro-bars-list">
+          <div class="macro-item">
+            <div class="macro-item-head">
+              <span class="macro-name"><strong>Protein</strong> (Muscle Repair & Synthesis)</span>
+              <span class="macro-target orange-text" id="dispMacroProteinText">160g • 640 kcal (26%)</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill fill-orange" id="barProtein" style="width: 84%;"></div>
+            </div>
+          </div>
+
+          <div class="macro-item">
+            <div class="macro-item-head">
+              <span class="macro-name"><strong>Carbohydrates</strong> (Glycogen & Output)</span>
+              <span class="macro-target teal-text" id="dispMacroCarbsText">280g • 1,120 kcal (46%)</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill fill-teal" id="barCarbs" style="width: 74%;"></div>
+            </div>
+          </div>
+
+          <div class="macro-item">
+            <div class="macro-item-head">
+              <span class="macro-name"><strong>Essential Fats</strong> (Hormonal Support)</span>
+              <span class="macro-target amber-text" id="dispMacroFatsText">65g • 585 kcal (24%)</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill fill-amber" id="barFats" style="width: 65%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="staples-section">
+          <h3>Preferred Food Staples</h3>
+          <div class="staples-tags" id="dispStaplesTags">
+            <!-- Populated dynamically from profile.staples -->
+          </div>
+        </div>
+
+        <div class="schedule-preview">
+          <h3>Weekly Activity & Training Cadence</h3>
+          <div class="week-pills">
+            <div class="day-pill active-day">
+              <span class="day-name">MON</span>
+              <span class="day-focus">Push A</span>
+            </div>
+            <div class="day-pill active-day">
+              <span class="day-name">TUE</span>
+              <span class="day-focus">Pull A</span>
+            </div>
+            <div class="day-pill rest-day">
+              <span class="day-name">WED</span>
+              <span class="day-focus">Zone 2 / Mobility</span>
+            </div>
+            <div class="day-pill active-day">
+              <span class="day-name">THU</span>
+              <span class="day-focus">Push B</span>
+            </div>
+            <div class="day-pill active-day">
+              <span class="day-name">FRI</span>
+              <span class="day-focus">Pull B</span>
+            </div>
+            <div class="day-pill cond-day">
+              <span class="day-name">SAT</span>
+              <span class="day-focus">5K / HIIT</span>
+            </div>
+            <div class="day-pill rest-day">
+              <span class="day-name">SUN</span>
+              <span class="day-focus">Recovery</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Persistent JSON Memory & Past Coaching Sessions -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h2>JSON History & Athlete Memory Bank</h2>
+            <p>Stored in <code>backend/data/*.json</code> and accessible across all chats</p>
+          </div>
+          <div class="tab-switcher">
+            <button class="tab-btn active" id="dashTabMemories">Memory Bank <span id="memoriesCountBadge">2</span></button>
+            <button class="tab-btn" id="dashTabSessions">Past Chats <span id="sessionsCountBadge">1</span></button>
+          </div>
+        </div>
+
+        <!-- Tab 1: Persistent Memories List -->
+        <div id="dashMemoriesPanel" class="memory-panel-wrap">
+          <div class="memories-list" id="memoriesList">
+            <!-- Populated dynamically -->
+          </div>
+          <div class="add-memory-bar">
+            <input type="text" id="newMemoryInput" placeholder="Log a new PR, dietary preference, or injury note to JSON memory...">
+            <button class="btn btn-primary btn-sm" id="addMemoryBtn">+ Add Note</button>
+          </div>
+        </div>
+
+        <!-- Tab 2: Past Conversations List -->
+        <div id="dashSessionsPanel" class="memory-panel-wrap hidden">
+          <div class="sessions-toolbar">
+            <span>Click any past session to resume it inside the Coach popup</span>
+            <button class="btn btn-secondary btn-xs" id="dashNewSessionBtn">+ New Session</button>
+          </div>
+          <div class="conversations-list" id="conversationsList">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       EDIT STATS & INTAKES MODAL (FEEDS LIVE INTO AI CHATBOT & JSON STORE)
+       ========================================================================== -->
+  <div class="modal-overlay" id="editProfileModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3>Edit Athlete Metrics & Daily Intakes</h3>
+          <p>Changes are saved to JSON storage and immediately fed to Defy Coach</p>
+        </div>
+        <button class="icon-btn" id="closeEditModalBtn" title="Close">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <form id="editProfileForm" class="edit-form-grid">
+        <div class="form-field">
+          <label for="editNameInput">Athlete Name</label>
+          <input type="text" id="editNameInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editGoalInput">Primary Goal</label>
+          <input type="text" id="editGoalInput" placeholder="e.g. Lean Hypertrophy & Stamina" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editWeightInput">Bodyweight (kg)</label>
+          <input type="number" step="0.1" min="30" max="250" id="editWeightInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editHeightInput">Height (cm)</label>
+          <input type="number" step="0.5" min="120" max="230" id="editHeightInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editBodyFatInput">Body Fat (%)</label>
+          <input type="number" step="0.1" min="4" max="60" id="editBodyFatInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editCaloriesInput">Daily Calorie Intake (kcal)</label>
+          <input type="number" step="10" min="1000" max="8000" id="editCaloriesInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editProteinInput">Protein Target (g/day)</label>
+          <input type="number" step="1" min="30" max="450" id="editProteinInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editCarbsInput">Carbohydrates Target (g/day)</label>
+          <input type="number" step="1" min="30" max="900" id="editCarbsInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editFatsInput">Essential Fats Target (g/day)</label>
+          <input type="number" step="1" min="15" max="250" id="editFatsInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editWaterInput">Water Intake Target (L/day)</label>
+          <input type="number" step="0.1" min="1" max="10" id="editWaterInput" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editSplitInput">Active Workout / Activity Split</label>
+          <input type="text" id="editSplitInput" placeholder="e.g. 4-Day Push/Pull" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editDietInput">Diet Protocol</label>
+          <input type="text" id="editDietInput" placeholder="e.g. Indian High-Protein Vegetarian" required>
+        </div>
+
+        <div class="form-field full-span">
+          <label for="editStaplesInput">Preferred Food Staples (comma-separated)</label>
+          <input type="text" id="editStaplesInput" placeholder="Paneer, Soya Chunks, Moong Sprouts, Dal, Curd, Whey">
+        </div>
+
+        <div class="modal-footer full-span">
+          <button type="button" class="btn btn-secondary" id="cancelEditModalBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Feed to AI Coach</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FLOATING CORNER CHATBOT WIDGET & LAUNCHER
+       ========================================================================== -->
+
+  <!-- Corner Floating Action Button -->
+  <button class="chat-fab" id="chatFabBtn" aria-label="Open Defy Coach Chat">
+    <div class="fab-icon-open">
+      <svg class="icon" style="width: 24px; height: 24px;" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <span class="fab-label">Defy Coach</span>
+    </div>
+    <div class="fab-icon-close">
+      <svg class="icon" style="width: 22px; height: 22px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </div>
+  </button>
+
+  <!-- Pop-up Chat Drawer in Bottom-Right Corner -->
+  <aside class="chat-popup" id="chatPopup" aria-hidden="true">
+    <!-- Chat Popup Header -->
+    <div class="chat-popup-header">
+      <div class="coach-brand">
+        <div class="coach-badge-icon">⚡</div>
+        <div>
+          <h3 id="activeSessionTitle">Defy Coach</h3>
+          <span class="coach-subtitle" id="coachLiveMetricsSub">Synced: 74.5 kg • 2,450 kcal • 160g P</span>
+        </div>
+      </div>
+
+      <div class="chat-header-controls">
+        <!-- Session Selector Dropdown -->
+        <select id="popupSessionSelect" class="session-select" title="Switch conversation session"></select>
+
+        <!-- New Chat Button -->
+        <button class="icon-btn" id="popupNewChatBtn" title="Start a new coaching session">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+
+        <!-- Clear Current Session Button -->
+        <button class="icon-btn" id="clearChatBtn" title="Clear current conversation">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+
+        <!-- Minimize Popup Button -->
+        <button class="icon-btn" id="closeChatPopupBtn" title="Minimize chat">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages Scroll Area -->
+    <div class="chat-messages" id="chatMessages">
+      <!-- Populated dynamically -->
+    </div>
+
+    <!-- Suggested Asks Bar (3 suggestions shown when opening the chatbot) -->
+    <div class="suggested-asks-wrap" id="suggestedAsksWrap">
+      <span class="suggested-label">Suggested Asks</span>
+      <div class="suggested-chips">
+        <button class="suggested-chip" data-prompt="Build a full-day food planning guide scaled to my current calorie and protein targets.">
+          🥗 Food planning guide for my intakes
+        </button>
+        <button class="suggested-chip" data-prompt="Plan my weekly workout and outdoor conditioning activity schedule.">
+          🏋️ Weekly workout & activity plan
+        </button>
+        <button class="suggested-chip" data-prompt="I'm feeling pretty tired and busy today—how should I adjust my session?">
+          💬 Feeling tired today—adjust my day
+        </button>
+      </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div class="typing-indicator-row" id="typingIndicator">
+      <div class="typing-bubble">
+        <div class="bounce-dot"></div>
+        <div class="bounce-dot"></div>
+        <div class="bounce-dot"></div>
+        <span class="typing-text" id="typingStatusText">Defy Coach is typing...</span>
+      </div>
+    </div>
+
+    <!-- Chat Input Area (Clean Text + Optional Voice Input Mic) -->
+    <div class="chat-input-area">
+      <div class="input-box-row">
+        <button type="button" class="mic-btn" id="micBtn" title="Use voice to dictate your message">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+        </button>
+
+        <textarea
+          id="chatInput"
+          class="chat-textarea"
+          placeholder="Chat casually, or ask for a food guide or activity plan..."
+          rows="1"></textarea>
+
+        <button type="button" class="send-btn" id="sendBtn" title="Send message" disabled>
+          <svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastMessage">Notification</div>
+
+  <!-- Application Script -->
+  <script src="frontend/app.js"></script>
+</body>
+</html>
